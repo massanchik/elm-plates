@@ -15,18 +15,13 @@ type Msg
 
 
 type alias Model =
-    { selected : Int
+    { selected : Maybe Int
     }
-
-
-default : Int
-default =
-    -1
 
 
 initialModel : Model
 initialModel =
-    { selected = default
+    { selected = Nothing
     }
 
 
@@ -36,15 +31,15 @@ update msg model =
         Select plate ->
             { model
                 | selected =
-                    if model.selected == plate then
-                        default
+                    if model.selected == Just plate then
+                        Nothing
 
                     else
-                        plate
+                        Just plate
             }
 
 
-plateStyle : Int -> Int -> Attribute Msg
+plateStyle : Maybe Int -> Maybe Int -> Attribute Msg
 plateStyle selected current =
     style "color"
         (if selected == current then
@@ -55,9 +50,9 @@ plateStyle selected current =
         )
 
 
-viewPlates : Int -> Int -> String -> List (Html Msg) -> List (Html Msg)
+viewPlates : Maybe Int -> Int -> String -> List (Html Msg) -> List (Html Msg)
 viewPlates selected k v plates =
-    div [ class "plate", plateStyle selected k, onClick (Select k) ] [ text v ] :: plates
+    div [ class "plate", plateStyle selected (Just k), onClick (Select k) ] [ text v ] :: plates
 
 
 view : Model -> Plates -> Html Msg
